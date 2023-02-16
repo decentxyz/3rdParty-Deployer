@@ -184,10 +184,10 @@ const Form = ({ revPathAddress }: any) => {
                 updatePath()
               }}
             >
-              Update Path
+              Update
             </button>}
           </div>
-          {data && <div className='flex gap-4 w-2/3 mt-4 align-center justify-start'>
+          {data && <div className='flex gap-4 w-2/3 mt-4 items-center justify-start'>
             <div>
               <p className="font-medium">Balance</p>
               <p className="font-header">{data?.withdrawable + data?.pendingDistribution} ETH</p>
