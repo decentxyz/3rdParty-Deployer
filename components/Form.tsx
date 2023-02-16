@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAccount, useEnsName, useNetwork, useProvider, useSigner } from 'wagmi'
-import { useR3vlClient, useCreateRevenuePath, R3vlProvider, createClient, useBalances, useRevenuePathTiers, useUpdateRevenuePath } from '@r3vl/sdk'
+import { useR3vlClient, useCreateRevenuePath, R3vlProvider, createClient, useBalances, useRevenuePathTiers, useUpdateRevenuePath, useWithdraw } from '@r3vl/sdk'
 import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 
@@ -40,6 +40,7 @@ const Form = ({ revPathAddress }: any) => {
   const { data } = useBalances(revPathAddress)
   const { data: tiers, isFetched: tiersFetched } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
   const update = useUpdateRevenuePath(revPathAddress)
+  const mutation = useWithdraw(revPathAddress)
 
   useEffect(() => {
     const tier = tiers?.[0]
@@ -194,10 +195,15 @@ const Form = ({ revPathAddress }: any) => {
             </div>
 
             <button
+              disabled={mutation?.isLoading}
               className='cursor-pointer py-2 px-3 bg-black text-white rounded-full flex justify-center max-h-[40px]'
-              onClick={submitPath}
+              onClick={() => {
+                mutation?.mutate({
+                  walletAddress: address || "",
+                })
+              }}
             >
-              Withdraw
+              {mutation?.isLoading ? "Pending..." : "Withdraw"}
             </button>
           </div>}
         </div>
