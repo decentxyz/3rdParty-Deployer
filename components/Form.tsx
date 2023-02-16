@@ -37,7 +37,7 @@ const Form = ({ revPathAddress }: any) => {
     
   const { mutate, data: tx } = useCreateRevenuePath()
   const { data } = useBalances(revPathAddress)
-  const { data: tiers, isFetched: tiersFetched, is } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
+  const { data: tiers, isFetched: tiersFetched } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
   const update = useUpdateRevenuePath(revPathAddress)
 
   useEffect(() => {
