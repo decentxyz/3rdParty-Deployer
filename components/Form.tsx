@@ -184,7 +184,7 @@ const Form = ({ revPathAddress }: any) => {
           {data && <div className='flex gap-4 w-2/3 mt-4 align-center justify-start'>
             <div>
               <p className="font-medium">Balance</p>
-              <p className="font-header">{data?.withdrawable} ETH</p>
+              <p className="font-header">{data?.withdrawable + data?.pendingDistribution} ETH</p>
             </div>
 
             <button
