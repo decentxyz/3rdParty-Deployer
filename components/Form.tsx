@@ -21,8 +21,6 @@ const Form = ({ revPathAddress }: any) => {
     return prev + curr.share
   }, collabs.length), collabs])
 
-  console.log("Q·!", collabsMemo)
-
   useR3vlClient({
     chainId: chain?.id as any,
     provider,
@@ -38,7 +36,7 @@ const Form = ({ revPathAddress }: any) => {
     
   const { mutate, data: tx } = useCreateRevenuePath()
   const { data } = useBalances(revPathAddress)
-  const { data: tiers, isFetched: tiersFetched } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
+  const { data: tiers, isFetched: tiersFetched, is } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
   const update = useUpdateRevenuePath(revPathAddress)
 
   useEffect(() => {
@@ -161,7 +159,7 @@ const Form = ({ revPathAddress }: any) => {
               Add
             </button>
 
-            {tiersFetched && !tiers?.[0] && <button
+            {!revPathAddress && <button
               className='cursor-pointer py-2 px-3 bg-black text-white rounded-full flex justify-center max-h-[40px]'
               onClick={submitPath}
             >
