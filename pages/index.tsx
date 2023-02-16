@@ -34,7 +34,7 @@ const Home: NextPage = () => {
           </Link>
         </div>
 
-        {!isConnected && <Form revPathAddress={router.query.revPath} />}
+        {isConnected && <Form revPathAddress={router.query.revPath} />}
       </main>
 
       <footer className='py-8 border-t border-white'>
