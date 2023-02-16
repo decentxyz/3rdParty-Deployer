@@ -7,10 +7,12 @@ import Link from 'next/link';
 import { R3vlProvider, createClient } from '@r3vl/sdk';
 import Form from '../components/Form';
 import { useRouter } from 'next/router';
+import { useAccount } from 'wagmi';
 
 const Home: NextPage = () => {
   const router = useRouter()
   const r3vlClient = createClient()
+  const { isConnected } = useAccount()
 
   return (
     <R3vlProvider client={r3vlClient}>
@@ -32,7 +34,7 @@ const Home: NextPage = () => {
           </Link>
         </div>
 
-        <Form revPathAddress={router.query.revPath}  />
+        {!isConnected && <Form revPathAddress={router.query.revPath} />}
       </main>
 
       <footer className='py-8 border-t border-white'>
