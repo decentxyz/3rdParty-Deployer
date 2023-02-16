@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useAccount, useEnsName, useNetwork, useProvider, useSigner } from 'wagmi'
 import { useR3vlClient, useCreateRevenuePath, R3vlProvider, createClient, useBalances, useRevenuePathTiers, useUpdateRevenuePath } from '@r3vl/sdk'
 import { useRouter } from 'next/router'
+import { ethers } from 'ethers'
 
 // const revPathAddress = "0x3920620177D55DA7849237bb932E5112005d4A04"
 
@@ -124,9 +125,15 @@ const Form = ({ revPathAddress }: any) => {
                 <p className="text-sm absolute right-3">%</p>
               </div>
               <input
-                onChange={(e) => {
+                onChange={async (e) => {
+                  let _address: string
+
+                  if (!ethers.utils.isAddress(e.currentTarget.value) &&  /^[\dA-Za-z][\dA-Za-z-]{1,61}[\dA-Za-z]\.eth$/.test(e.currentTarget.value)) {
+                    _address = await provider.resolveName(e.currentTarget.value) || ""
+                  }
+
                   const newCollabs = collabs.map((_, index) => {
-                    if (index === i) return { address: e.currentTarget.value, share: collab.share }
+                    if (index === i) return { address: _address || e.currentTarget.value, share: collab.share }
 
                     return _
                   })
