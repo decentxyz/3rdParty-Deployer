@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAccount, useEnsName, useNetwork, useProvider, useSigner } from 'wagmi'
 import { useR3vlClient, useCreateRevenuePath, R3vlProvider, createClient, useBalances, useRevenuePathTiers, useUpdateRevenuePath } from '@r3vl/sdk'
@@ -16,6 +16,7 @@ const Form = ({ revPathAddress }: any) => {
   const [pathName, setPathName] = useState("")
   const [collabs, setCollabs] = useState<{ address?: string; share: number }[]>(revPathAddress ? [] : [{ address, share: 100 }])
   const [error, setError] = useState("")
+  const ensRef = useRef({})
   const collabsMemo = useMemo(() => {
     return collabs
   }, [collabs.reduce((prev, curr) => {
@@ -65,7 +66,7 @@ const Form = ({ revPathAddress }: any) => {
     }, 0)
 
     if (sum > 100 || sum < 100) {
-      setError("Total share must be equal to 0")
+      setError("Total share must be equal to 100%")
 
       return
     }
@@ -73,7 +74,12 @@ const Form = ({ revPathAddress }: any) => {
     mutate({
       name: pathName,
       walletList: [
-        collabs.map(collab => collab.address) as any
+        collabs.map(collab => {
+          if (/^[\dA-Za-z][\dA-Za-z-]{1,61}[\dA-Za-z]\.eth$/.test(collab.address || ""))
+            return ensRef.current[collab.address as keyof typeof ensRef.current]
+
+          return collab.address
+        }) as any
       ],
       distribution: [
         collabs.map(collab => collab.share) as any
@@ -102,7 +108,7 @@ const Form = ({ revPathAddress }: any) => {
 
   return <>
     <div className='flex flex-col gap-4'>
-          <input onChange={(e) => setPathName(e.currentTarget.value)} className='border rounded-full w-3/4 px-3 py-2 text-sm' placeholder='Revenue Path Name' />
+          <input onChange={(e) => setPathName(e.target.value)} className='border rounded-full w-3/4 px-3 py-2 text-sm' placeholder='Revenue Path Name' />
 
           {collabsMemo.map((collab, i) => {
             return <div key={i} className='flex gap-2'>
@@ -110,7 +116,7 @@ const Form = ({ revPathAddress }: any) => {
                 <input
                   onChange={(e) => {
                     const newCollabs = collabs.map((_, index) => {
-                      if (index === i) return { address: collab.address, share: parseFloat(e.currentTarget.value || "0") }
+                      if (index === i) return { address: collab.address, share: parseFloat(e.target.value || "0") }
 
                       return _
                     })
@@ -126,19 +132,19 @@ const Form = ({ revPathAddress }: any) => {
               </div>
               <input
                 onChange={async (e) => {
-                  let _address: string
-
-                  if (!ethers.utils.isAddress(e.currentTarget.value) &&  /^[\dA-Za-z][\dA-Za-z-]{1,61}[\dA-Za-z]\.eth$/.test(e.currentTarget.value)) {
-                    _address = await provider.resolveName(e.currentTarget.value) || ""
-                  }
-
                   const newCollabs = collabs.map((_, index) => {
-                    if (index === i) return { address: _address || e.currentTarget.value, share: collab.share }
-
-                    return _
+                    if (index === i) return { address: e.target.value, share: collab.share }
+    
+                      return _
                   })
 
                   setCollabs(newCollabs)
+
+                  if (!ethers.utils.isAddress(e.target.value) && /^[\dA-Za-z][\dA-Za-z-]{1,61}[\dA-Za-z]\.eth$/.test(e.target.value)) {
+                    const ensAddress = await provider.resolveName(e.target.value) || ""
+                        
+                    ensRef.current = { ...ensRef.current, [e.target.value]: ensAddress }
+                  }
                 }}
                 placeholder='0x1234...56aB'
                 className='border rounded-full w-3/4 px-3 py-2 text-sm'
