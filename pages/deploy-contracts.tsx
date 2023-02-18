@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useForm, FormProvider } from "react-hook-form";
@@ -13,6 +13,7 @@ import MediaUpload from "../components/MediaUpload/MediaUpload";
 import { NFTStorage, Blob } from 'nft.storage';
 import { useRouter } from "next/router";
 import Form from "../components/Form";
+import Modal from 'react-modal'
 
 const schema = yup.object().shape({
   collectionName: yup.string()
@@ -63,6 +64,8 @@ type FormData = {
   revPathAddress: string;
 };
 
+Modal.setAppElement('#containah')
+
 const Deploy: NextPage = () => {
   const { data: signer } = useSigner();
   const { chain } = useNetwork();
@@ -72,7 +75,7 @@ const Deploy: NextPage = () => {
   const methods = useForm<FormData>({
     resolver: yupResolver(schema),
   });
-  const { register, getValues, handleSubmit, clearErrors, reset, formState: { errors, isValid } } = methods;
+  const { register, getValues, handleSubmit, clearErrors, reset, setValue, formState: { errors, isValid } } = methods;
   const onSubmit = handleSubmit(data => console.log(data));
 
   const [nftImage, setNftImage] = useState({ preview: '/images/icon.png', raw: { type: "" } });
@@ -90,7 +93,8 @@ const Deploy: NextPage = () => {
     clearErrors();
   }
 
-  const success = (nft:any) => {
+  const success = (nft: any) => {
+    console.log("NFT RESULT:::", nft)
     setShowLink(true);
     setLink(nft.address);
   }
@@ -166,11 +170,42 @@ const Deploy: NextPage = () => {
     }
   }
 
-  // {isConnected && <Form setRevPathAddress={setRevPathAddress} revPathAddress={router.query.revPath} setRevPathAddress={setRevPathAddress} />}
+  const [modalIsOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    if (revPathAddress) {
+      setValue("revPathAddress", revPathAddress)
+
+      closeModal()
+    }
+  }, [revPathAddress, setValue])
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   return (
     <>
-    <div className="background min-h-screen text-white py-24 px-16">
+      <Modal
+        style={{ content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+        } }}
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Create Revenue Path"
+      >
+        {isConnected && <Form setRevPathAddress={setRevPathAddress} revPathAddress={router.query.revPath} />}
+      </Modal>
+    <div id="containah" className="background min-h-screen text-white py-24 px-16">
       <div className="flex flex-wrap space-x-10 justify-center">
         <div className="space-y-8 pb-8 text-center">
           <div className="flex justify-center">
@@ -204,6 +239,7 @@ const Deploy: NextPage = () => {
                 <InfoField isHovering={isHovering1} setIsHovering={setIsHovering1} xDirection={'right'} yDirection={'bottom'} infoText={"Number of NFTs available in the collection."} />
               </div>
               <input className="border border-black text-black h-8" {...register("editionSize")} />
+              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="editionSize" /></p>
             </div>
 
             <div className="min-w-[400px] flex flex-col gap-3">
@@ -252,9 +288,9 @@ const Deploy: NextPage = () => {
             </div>
 
             <div className="min-w-[400px] flex flex-col gap-3">
-              {!revPathAddress && <button type="button" onClick={() => null} className="font-header">Share Earnings</button>}
+              {!revPathAddress && <button type="button" onClick={() => openModal()} className="font-header">Share Earnings</button>}
               {revPathAddress && <p className="font-header">Share Earnings</p>}
-              {revPathAddress && <input disabled className="border border-black text-black h-8" defaultValue={"3/13"} {...register("revPathAddress", {required: "Must set."} )} />}
+              {revPathAddress && <input disabled className="border border-black text-black h-8" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />}
               <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="revPathAddress" /></p>
             </div>
 
