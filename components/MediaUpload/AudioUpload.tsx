@@ -12,7 +12,7 @@ const AudioUpload = ({ audioFile, setAudioFile, formRegisterName }: any) => {
   };
 
   return (
-    <label>
+    <label className="min-w-[400px]">
       <input
         type="file"
         style={{ display: "none" }}

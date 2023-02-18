@@ -15,7 +15,7 @@ const ImageUpload = ({ nftImage, setNftImage, formRegisterName, label }: any) =>
   };
 
   return (
-    <label>
+    <label className="min-w-[400px]">
       <input
         type="file"
         style={{ display: "none" }}
