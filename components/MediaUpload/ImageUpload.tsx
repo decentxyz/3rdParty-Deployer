@@ -42,7 +42,7 @@ const ImageUpload = ({ nftImage, setNftImage, formRegisterName, label }: any) =>
           <p className="upload-subtext">Image, video, pdfs, 3D {"&"} html</p>
         </div>
       </div>
-      <p className="error-text"><ErrorMessage errors={errors} name={formRegisterName} /></p>
+      <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name={formRegisterName} /></p>
     </label>
   );
 };

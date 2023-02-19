@@ -55,11 +55,11 @@ type FormData = {
   description: string;
   nftImage: any;
   audioFile: any;
-  editionSize: number;
+  editionSize: number | string;
   tokenPrice: string;
   saleStartDate: string;
   saleEndDate: string;
-  maxTokenPurchase: number | string;
+  maxTokenPurchase: number;
   royalty: number;
   revPathAddress: string;
 };
@@ -129,7 +129,29 @@ const Deploy: NextPage = () => {
         let nft;
 
         try {
-          if (!ethers.utils.isAddress(revPathAddress)) return
+          // if (!ethers.utils.isAddress(revPathAddress)) return
+
+          console.log("METAMETA:::", sdk,
+          getValues("collectionName"), // name
+          getValues("symbol"), // symbol
+          false, // hasAdjustableCap
+          false, // isSoulbound
+          0, // maxTokens
+          ethers.utils.parseEther("0.005"), // tokenPrice
+          10, // maxTokensPurchase
+          null, //presaleMerkleRoot
+          0, // presaleStart
+          0, // presaleEnd
+          Math.floor((new Date(2023, 1, 27)).getTime() / 1000), // saleStart
+          Math.floor((new Date(2023, 2, 13)).getTime() / 1000), // saleEnd = 1 year
+          getValues("royalty") * 100, // royaltyBPS
+          getValues("revPathAddress"), // payoutAddress (if not owner)
+          `ipfs://${ipfs}?`, // contractURI
+          `ipfs://${ipfs}?`, // metadataURI
+          null, // metadataRendererInit
+          null, // tokenGateConfig
+          (pending: any) => { console.log("Pending nonce: ", pending.nonce) },
+          (receipt: any) => { console.log("Receipt block: ", receipt.blockNumber) },)
 
           nft = await edition.deploy(
             sdk,
@@ -137,9 +159,9 @@ const Deploy: NextPage = () => {
             getValues("symbol"), // symbol
             false, // hasAdjustableCap
             false, // isSoulbound
-            getValues("editionSize"), // maxTokens
-            ethers.utils.parseEther(getValues("tokenPrice")), // tokenPrice
-            (typeof getValues("maxTokenPurchase") === "string" && getValues("maxTokenPurchase") === "Open Edition" ? 0 : !isNaN(getValues("maxTokenPurchase") as number) ? getValues("maxTokenPurchase") : 0) as number, // maxTokensPurchase
+            0, // maxTokens
+            ethers.utils.parseEther("0.005"), // tokenPrice
+            10, // maxTokensPurchase
             null, //presaleMerkleRoot
             0, // presaleStart
             0, // presaleEnd
@@ -188,24 +210,15 @@ const Deploy: NextPage = () => {
     setIsOpen(false);
   }
 
+  if (typeof window !== "undefined") window.meta = () => setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+
   return (
     <>
-      <Modal
-        style={{ content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-        } }}
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Create Revenue Path"
-      >
-        {isConnected && <Form setRevPathAddress={setRevPathAddress} revPathAddress={router.query.revPath} />}
-      </Modal>
-    <div id="containah" className="background min-h-screen text-white py-24 px-16">
+    <div id="containah" className="flex flex-col gap-8 items-center justify-center background min-h-screen text-white py-12 px-16">
+      <div className="flex flex-col items-center justify-between gap-8">
+        <h1>Reveel Creator Grant</h1>
+        <p className="font-header text-xl">Submit Your Project</p>
+      </div>
       <div className="flex flex-wrap space-x-10 justify-center">
         <div className="space-y-8 pb-8 text-center">
           <div className="flex justify-center">
@@ -215,100 +228,109 @@ const Deploy: NextPage = () => {
       </div>
 
       <FormProvider {...methods}>
-        <form onSubmit={onSubmit} className='gap-4 lg:mx-24 sm:mx-16'>
+        <div className='gap-4 lg:mx-24 sm:mx-16'>
+          <div className="flex gap-20">
+            <div className="flex flex-col">
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Project Name</p>
+                <input className="border border-black text-black h-8" {...register("collectionName", {required: "Name your collection"} )} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="collectionName" /></p>
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Symbol</p>
+                <input className="border border-black text-black h-8" {...register("symbol", {required: "Give your collection a symbol"} )} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="symbol" /></p>
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Description</p>
+                <textarea className="border border-black text-black h-24" {...register("description", {required: "Please enter a description."} )} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="description" /></p>
+              </div>
+
+              <MediaUpload nftImage={nftImage} setNftImage={setNftImage} audioFile={audioFile} setAudioFile={setAudioFile} />
+            </div>
+
+            <div className="flex flex-col">
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Reveel payout address {revPathAddress && <a href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}`}>View in Reveel</a>}</p>
+                {isConnected && <Form revPathName={getValues("collectionName")} setRevPathAddress={setRevPathAddress} revPathAddress={router.query.revPath} />}
+                {<input placeholder="0x000" disabled className="border border-black text-black h-8" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />}
+                {<p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="revPathAddress" /></p>}
+              </div>
+
+              {/* Decent contracts support EIP 2981 */}
+              <div className="w-[500px] flex flex-col gap-3">
+                <div className="pb-2 flex gap-1">
+                  <p>Creator Royalty (Optional)</p>
+                  <InfoField isHovering={isHovering3} setIsHovering={setIsHovering3} xDirection={'left'} yDirection={'bottom'} infoText={"Please enter a percentage that you would like to receive from the value of every sale.  We use EIP 2981."} />
+                </div>
+                <div className="flex items-center text-black relative">
+                  <input
+                    className="border border-black h-8 w-full" {...register("royalty")} />
+                  <p className="text-sm absolute right-3">%</p>
+                </div>
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Minting Price</p>
+                <input disabled className="border border-black text-black h-8" defaultValue={"0.005"} {...register("tokenPrice" )} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="tokenPrice" /></p>
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <div className="pb-2 flex gap-1 items-center">
+                  <p className="font-header">Purchase Count (Optional)</p>
+                  <InfoField isHovering={isHovering2} setIsHovering={setIsHovering2} xDirection={'right'} yDirection={'bottom'} infoText={"Enter the number of NFTs each user can mint at one time.."} />
+                </div>
+                <input disabled className="border border-black text-black h-8" defaultValue={"10"} {...register("maxTokenPurchase")} />
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <div className="pb-2 flex gap-1 items-center">
+                  <p className="font-header">Edition Size</p>
+                  <InfoField isHovering={isHovering1} setIsHovering={setIsHovering1} xDirection={'right'} yDirection={'bottom'} infoText={"Number of NFTs available in the collection."} />
+                </div>
+                <input disabled className="border border-black text-black h-8" defaultValue="Open Edition" {...register("editionSize")} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="editionSize" /></p>
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Sale Start Date</p>
+                <input className="border border-black text-black h-8" defaultValue={"2/27"} disabled {...register("saleStartDate" )} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleStartDate" /></p>
+              </div>
+
+              <div className="w-[500px] flex flex-col gap-3">
+                <p className="font-header">Sale End Date</p>
+                <input className="border border-black text-black h-8" defaultValue={"3/13"} disabled {...register("saleEndDate" )} />
+                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleEndDate" /></p>
+              </div>    
+            </div>
+          </div>
 
           <div className="flex flex-col justify-center items-center flex-wrap items-center gap-4">
-            <div className="flex justify-between pb-6">
-              <h3 className="font-header text-2xl">Submit Your Project</h3>
-            </div>
-            <div className="flex justify-end">
+
+            {/* <div className="flex justify-end">
               <button onClick={() => resetForm()}>
                 <input type="reset" className="cursor-pointer" value="Reset" />
               </button>
-            </div>
+            </div> */}
 
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <p className="font-header">Project Name</p>
-              <input className="border border-black text-black h-8" {...register("collectionName", {required: "Name your collection"} )} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="collectionName" /></p>
-            </div>
+      
 
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <div className="pb-2 flex gap-1 items-center">
-                <p className="font-header">Edition Size</p>
-                <InfoField isHovering={isHovering1} setIsHovering={setIsHovering1} xDirection={'right'} yDirection={'bottom'} infoText={"Number of NFTs available in the collection."} />
-              </div>
-              <input className="border border-black text-black h-8" {...register("editionSize")} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="editionSize" /></p>
-            </div>
+            <button className="pt-8 flex gap-4 items-center" type="button" onClick={() => {
+              onSubmit()
 
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <div className="pb-2 flex gap-1 items-center">
-                <p className="font-header">Purchase Count (Optional)</p>
-                <InfoField isHovering={isHovering2} setIsHovering={setIsHovering2} xDirection={'right'} yDirection={'bottom'} infoText={"Enter the number of NFTs each user can mint at one time.."} />
-              </div>
-              <input className="border border-black text-black h-8" defaultValue="Open Edition" {...register("maxTokenPurchase")} />
-            </div>
-
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <p className="font-header">Symbol</p>
-              <input className="border border-black text-black h-8" {...register("symbol", {required: "Give your collection a symbol"} )} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="symbol" /></p>
-            </div>
-
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <p className="font-header">Minting Price</p>
-              <input className="border border-black text-black h-8" defaultValue={0.005} {...register("tokenPrice", {required: "Must set price for token.  Please set to 0 if you wish for your NFTs to be free."} )} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="tokenPrice" /></p>
-            </div>
-
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <p className="font-header">Sale Start Date</p>
-              <input className="border border-black text-black h-8" defaultValue={"2/27"} disabled {...register("saleStartDate", {required: "Must set."} )} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleStartDate" /></p>
-            </div>
-
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <p className="font-header">Sale End Date</p>
-              <input className="border border-black text-black h-8" defaultValue={"3/13"} disabled {...register("saleEndDate", {required: "Must set."} )} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleEndDate" /></p>
-            </div>
-
-            {/* Decent contracts support EIP 2981 */}
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <div className="pb-2 flex gap-1">
-                <p>Creator Royalty (Optional)</p>
-                <InfoField isHovering={isHovering3} setIsHovering={setIsHovering3} xDirection={'left'} yDirection={'bottom'} infoText={"Please enter a percentage that you would like to receive from the value of every sale.  We use EIP 2981."} />
-              </div>
-              <div className="flex items-center text-black relative">
-                <input
-                  className="border border-black h-8 w-full" {...register("royalty")} />
-                <p className="text-sm absolute right-3">%</p>
-              </div>
-            </div>
-
-            <div className="min-w-[400px] flex flex-col gap-3">
-              {!revPathAddress && <button type="button" onClick={() => openModal()} className="font-header">Share Earnings</button>}
-              {revPathAddress && <p className="font-header">Share Earnings</p>}
-              {revPathAddress && <input disabled className="border border-black text-black h-8" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />}
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="revPathAddress" /></p>
-            </div>
-
-            <div className="min-w-[400px] flex flex-col gap-3">
-              <p className="font-header">Description</p>
-              <textarea className="border border-black text-black h-24" {...register("description", {required: "Please enter a description."} )} />
-              <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="description" /></p>
-            </div>
-
-            <MediaUpload nftImage={nftImage} setNftImage={setNftImage} audioFile={audioFile} setAudioFile={setAudioFile} />
-
-            <button className="pt-8 flex gap-4 items-center" type="button" onClick={() => deployFunction()}>
+              deployFunction()
+            }}>
               <input type="submit" className="cursor-pointer bg-white text-black px-4 py-1 rounded-full" value={"Deploy Project"} />
             </button>
             <p className="italic text-xs pt-4">{showLink ? `Edition created! Paste this into the blockscanner of your chain of choice to verify ${link}` : 'be patient, wallet confirmation can take a sec'}</p>
           </div>
 
-        </form>
+        </div>
       </FormProvider>
     </div>
   </>

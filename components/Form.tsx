@@ -7,14 +7,13 @@ import { ethers } from 'ethers'
 
 // const revPathAddress = "0x3920620177D55DA7849237bb932E5112005d4A04"
 
-const Form = ({ revPathAddress, setRevPathAddress }: any) => {
+const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   const [localAddress, setLocalAddress] = useState("")
   const { chain } = useNetwork()
   const { address } = useAccount()
   const provider = useProvider()
   const { data: signer } = useSigner()
   const { data: ens } = useEnsName({ address })
-  const [pathName, setPathName] = useState("")
   const [collabs, setCollabs] = useState<{ address?: string; share: number }[]>(revPathAddress ? [] : [{ address, share: 100 }])
   const [error, setError] = useState("")
   const ensRef = useRef({})
@@ -79,7 +78,7 @@ const Form = ({ revPathAddress, setRevPathAddress }: any) => {
     }
 
     mutate({
-      name: pathName,
+      name: revPathName,
       walletList: [
         collabs.map(collab => {
           if (/^[\dA-Za-z][\dA-Za-z-]{1,61}[\dA-Za-z]\.eth$/.test(collab.address || ""))
@@ -114,9 +113,7 @@ const Form = ({ revPathAddress, setRevPathAddress }: any) => {
   }
 
   return <>
-    <div className='flex flex-col gap-4'>
-      <input onChange={(e) => setPathName(e.target.value)} className='border rounded-full w-3/4 px-3 py-2 text-sm' placeholder='Revenue Path Name' />
-
+    <div className='flex flex-col gap-2 text-black mb-8'>
       {collabsMemo.map((collab, i) => {
         return <div key={i} className='flex gap-2'>
           <div className='flex relative items-center w-1/4'>
@@ -131,7 +128,7 @@ const Form = ({ revPathAddress, setRevPathAddress }: any) => {
                 setCollabs(newCollabs)
                 setError("")
               }}
-              className='border rounded-full w-full px-3 py-2 text-sm'
+              className='border border-black text-black h-8 w-full'
               value={collab.share}
               placeholder="%"
             />
@@ -154,7 +151,7 @@ const Form = ({ revPathAddress, setRevPathAddress }: any) => {
               }
             }}
             placeholder='0x1234...56aB'
-            className='border rounded-full w-3/4 px-3 py-2 text-sm'
+            className='w-3/4 border border-black text-black h-8 text-xs'
             value={collab.address}
           />
           <button className='text-red-600 text-xs' onClick={() => {  
@@ -173,21 +170,22 @@ const Form = ({ revPathAddress, setRevPathAddress }: any) => {
 
       <div className='flex gap-4 w-1/3 mt-4'>
         <button
-          className='flex items-center justify-center gap-4 py-1 px-3 text-sm border rounded-full border-black max-h-[40px]'
+          className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={() => setCollabs([ ...collabs, { address: '', share: 0 } ])}
         >
           Add
         </button>
 
         {!revPathAddress && <button
+          type="button"
           disabled={createRevPathIsFetched && !localAddress}
-          className='cursor-pointer py-2 px-3 bg-black text-white rounded-full flex justify-center max-h-[40px]'
+          className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={submitPath}
         >
           {createRevPathIsFetched && !localAddress ? "Pending..." : "Create"}
         </button>}
         {tiersFetched && tiers?.[0] && <button
-          className='cursor-pointer py-2 px-3 bg-black text-white rounded-full flex justify-center max-h-[40px]'
+          className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={() => {
             updatePath()
           }}
@@ -202,8 +200,9 @@ const Form = ({ revPathAddress, setRevPathAddress }: any) => {
         </div>
 
         <button
+          type="button"
           disabled={mutation?.isLoading}
-          className='cursor-pointer py-2 px-3 bg-black text-white rounded-full flex justify-center max-h-[40px]'
+          className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={() => {
             mutation?.mutate({
               walletAddress: address || "",
