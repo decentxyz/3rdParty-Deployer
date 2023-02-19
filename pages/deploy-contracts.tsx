@@ -75,7 +75,10 @@ const Deploy: NextPage = () => {
   const methods = useForm<FormData>({
     resolver: yupResolver(schema),
   });
-  const { register, getValues, handleSubmit, clearErrors, reset, setValue, formState: { errors, isValid } } = methods;
+  const { register, getValues, handleSubmit, clearErrors, reset, setValue, formState: { errors, isValid }, watch } = methods;
+
+  const [collectionName] = watch(['collectionName'])
+
   const onSubmit = handleSubmit(data => console.log(data));
 
   const [nftImage, setNftImage] = useState({ preview: '/images/icon.png', raw: { type: "" } });
@@ -89,6 +92,8 @@ const Deploy: NextPage = () => {
 
   const [revPathAddress, setRevPathAddress] = useState("")
 
+  const [isDeploying, setIsDeploying] = useState(false)
+
   const resetForm = () => {
     clearErrors();
   }
@@ -100,9 +105,13 @@ const Deploy: NextPage = () => {
   }
 
   const deployFunction = async () => {
+    setIsDeploying(true)
+
     try {
       if (!signer) {
         console.error("Please connect wallet.")
+
+        setIsDeploying(false)
       } else if (chain) {
         // create metadata
         const metadata = {
@@ -178,39 +187,36 @@ const Deploy: NextPage = () => {
           );
         } catch (error) {
           console.error(error);
+
+          setIsDeploying(false)
         } finally {
           if (nft?.address) {
             success(nft);
             reset();
           }
+
+          setIsDeploying(false)
         }
       } return
     } catch (error: any) {
       if (error.code === "INSUFFICIENT FUNDS") {
         console.error("get more $$, fren");
       }
+
+      setIsDeploying(false)
     }
   }
-
-  const [modalIsOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     if (revPathAddress) {
       setValue("revPathAddress", revPathAddress)
-
-      closeModal()
     }
   }, [revPathAddress, setValue])
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  // if (typeof window !== "undefined") window.meta = () => setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  // if (typeof window !== "undefined") window.meta = () => {
+  //   setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  //   setRevPathAddress("0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  // }
 
   return (
     <>
@@ -254,8 +260,12 @@ const Deploy: NextPage = () => {
 
             <div className="flex flex-col">
               <div className="w-[500px] flex flex-col gap-3">
-                <p className="font-header">Reveel payout address {revPathAddress && <a href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}`}>View in Reveel</a>}</p>
-                {isConnected && <Form revPathName={getValues("collectionName")} setRevPathAddress={setRevPathAddress} revPathAddress={router.query.revPath} />}
+                <p className="flex justify-between font-header">Reveel payout address {revPathAddress && <a rel='noreferrer' target='_blank' className="flex gap-2" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${collectionName}`}>
+                  View in Reveel
+
+                  <img style={{ width: '16px', height: '16px' }} src="/images/external-link.png" alt="external" />
+                </a>}</p>
+                {isConnected && <Form revPathName={getValues("collectionName")} setRevPathAddress={setRevPathAddress} revPathAddress={revPathAddress} />}
                 {<input placeholder="0x000" disabled className="border border-black text-black h-8" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />}
                 {<p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="revPathAddress" /></p>}
               </div>
@@ -325,7 +335,7 @@ const Deploy: NextPage = () => {
 
               deployFunction()
             }}>
-              <input type="submit" className="cursor-pointer bg-white text-black px-4 py-1 rounded-full" value={"Deploy Project"} />
+              <input disabled={isDeploying} type="submit" className="cursor-pointer bg-white text-black px-4 py-1 rounded-full" value={isDeploying ? "pending..." : "Deploy Project"} />
             </button>
             <p className="italic text-xs pt-4">{showLink ? `Edition created! Paste this into the blockscanner of your chain of choice to verify ${link}` : 'be patient, wallet confirmation can take a sec'}</p>
           </div>

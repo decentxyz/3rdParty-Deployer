@@ -8,7 +8,6 @@ import { ethers } from 'ethers'
 // const revPathAddress = "0x3920620177D55DA7849237bb932E5112005d4A04"
 
 const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
-  const [localAddress, setLocalAddress] = useState("")
   const { chain } = useNetwork()
   const { address } = useAccount()
   const provider = useProvider()
@@ -41,6 +40,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   const { data: tiers, isFetched: tiersFetched } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
   const update = useUpdateRevenuePath(revPathAddress)
   const mutation = useWithdraw(revPathAddress)
+  const [isCreating, setIsCreating] = useState(false)
 
   useEffect(() => {
     const tier = tiers?.[0]
@@ -61,12 +61,14 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
         console.log(r.logs[0].address)
 
         setRevPathAddress(r.logs[0].address)
-        setLocalAddress(r.logs[0].address)
       })
     }
   }, [tx, setRevPathAddress])
 
   const submitPath = () => {
+    setIsCreating(true)
+    setTimeout(() => setIsCreating(false), 4000)
+
     const sum = collabs.reduce((prev, curr) => {
       return prev + curr.share
     }, 0)
@@ -95,6 +97,9 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   }
 
   const updatePath = () => {
+    setIsCreating(true)
+    setTimeout(() => setIsCreating(false), 4000)
+
     const sum = collabs.reduce((prev, curr) => {
       return prev + curr.share
     }, 0)
@@ -168,7 +173,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
       <p className='text-red-600'>{error}</p>
 
-      <div className='flex gap-4 w-1/3 mt-4'>
+      <div className='flex gap-4 w-2/3 mt-4'>
         <button
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={() => setCollabs([ ...collabs, { address: '', share: 0 } ])}
@@ -178,11 +183,11 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
         {!revPathAddress && <button
           type="button"
-          disabled={createRevPathIsFetched && !localAddress}
+          disabled={isCreating && !createRevPathIsFetched}
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={submitPath}
         >
-          {createRevPathIsFetched && !localAddress ? "Pending..." : "Create"}
+          {isCreating && !createRevPathIsFetched ? "Pending..." : "Deploy Revenue Path"}
         </button>}
         {tiersFetched && tiers?.[0] && <button
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
@@ -190,10 +195,10 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
             updatePath()
           }}
         >
-          Update
+          Update Revenue Path
         </button>}
       </div>
-      {data && <div className='flex gap-4 w-2/3 mt-4 items-center justify-start'>
+      {data && <div className='flex gap-4 w-2/3 mt-4 items-center justify-start text-white'>
         <div>
           <p className="font-medium">Balance</p>
           <p className="font-header">{data?.withdrawable + data?.pendingDistribution} ETH</p>
@@ -201,7 +206,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
         <button
           type="button"
-          disabled={mutation?.isLoading}
+          disabled={mutation?.isLoading || isCreating}
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={() => {
             mutation?.mutate({
@@ -209,7 +214,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
             })
           }}
         >
-          {mutation?.isLoading ? "Pending..." : "Withdraw"}
+          {mutation?.isLoading || isCreating  ? "Pending..." : "Withdraw"}
         </button>
       </div>}
     </div>
