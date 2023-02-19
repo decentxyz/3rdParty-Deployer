@@ -64,8 +64,6 @@ type FormData = {
   revPathAddress: string;
 };
 
-Modal.setAppElement('#containah')
-
 const Deploy: NextPage = () => {
   const { data: signer } = useSigner();
   const { chain } = useNetwork();
@@ -213,9 +211,26 @@ const Deploy: NextPage = () => {
     }
   }, [revPathAddress, setValue])
 
-  if (typeof window !== "undefined") window.meta = () => {
-    setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
-    setRevPathAddress("0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  // if (typeof window !== "undefined") window.meta = () => {
+  //   setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  //   setRevPathAddress("0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  // }
+
+  if (showLink) {
+    return <div className="flex flex-col gap-8 items-center justify-center background min-h-screen text-white py-12 px-16">
+      <div className="flex flex-col items-center justify-center gap-4">
+        <div className="flex flex-col items-center justify-between gap-8 max-w-[900px]">
+          <h1>Thank you for submitting your project to the Reveel Creator Grant</h1>
+        </div>
+        <div className="flex flex-col gap-2 my-8">
+          <a href={`https://hq.decent.xyz/admin/${chain?.id}/Editions/${link}`}>View your NFT Project on Decent</a>
+          <a href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${collectionName}`}>View your Revenue Path on Reveel</a>
+        </div>
+        <div className="mt-22">
+          Your submission will go live for minting on February 27th with all the other submissions. You will be notified by email as the voting page goes live.
+        </div>
+      </div>
+    </div>
   }
 
   return (
