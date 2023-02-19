@@ -210,7 +210,7 @@ const Deploy: NextPage = () => {
     setIsOpen(false);
   }
 
-  if (typeof window !== "undefined") window.meta = () => setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  // if (typeof window !== "undefined") window.meta = () => setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
 
   return (
     <>
