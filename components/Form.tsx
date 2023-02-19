@@ -57,17 +57,24 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
   useEffect(() => {
     if (tx) {
+      setIsCreating(true);
+
       (tx as any).wait().then((r: any) => {
         console.log(r.logs[0].address)
 
         setRevPathAddress(r.logs[0].address)
+
+        setIsCreating(false)
       })
     }
   }, [tx, setRevPathAddress])
 
+  useEffect(() => {
+    if (createRevPathIsFetched) setIsCreating(false)
+  }, [createRevPathIsFetched])
+
   const submitPath = () => {
     setIsCreating(true)
-    setTimeout(() => setIsCreating(false), 4000)
 
     const sum = collabs.reduce((prev, curr) => {
       return prev + curr.share
@@ -97,9 +104,6 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   }
 
   const updatePath = () => {
-    setIsCreating(true)
-    setTimeout(() => setIsCreating(false), 4000)
-
     const sum = collabs.reduce((prev, curr) => {
       return prev + curr.share
     }, 0)
@@ -118,7 +122,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   }
 
   return <>
-    <div className='flex flex-col gap-2 text-black mb-8'>
+    <div className='flex flex-col gap-2 text-black mb-4'>
       {collabsMemo.map((collab, i) => {
         return <div key={i} className='flex gap-2'>
           <div className='flex relative items-center w-1/4'>
@@ -183,11 +187,11 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
         {!revPathAddress && <button
           type="button"
-          disabled={isCreating && !createRevPathIsFetched}
+          disabled={isCreating}
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={submitPath}
         >
-          {isCreating && !createRevPathIsFetched ? "Pending..." : "Deploy Revenue Path"}
+          {isCreating ? "Pending..." : "Deploy Revenue Path"}
         </button>}
         {tiersFetched && tiers?.[0] && <button
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
@@ -195,7 +199,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
             updatePath()
           }}
         >
-          Update Revenue Path
+          {update?.updateRevenueTiers.isLoading ? "pending..." : "Update Revenue Path"}
         </button>}
       </div>
       {data && <div className='flex gap-4 w-2/3 mt-4 items-center justify-start text-white'>
@@ -206,7 +210,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
         <button
           type="button"
-          disabled={mutation?.isLoading || isCreating}
+          disabled={mutation?.isLoading}
           className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
           onClick={() => {
             mutation?.mutate({
@@ -214,7 +218,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
             })
           }}
         >
-          {mutation?.isLoading || isCreating  ? "Pending..." : "Withdraw"}
+          {mutation?.isLoading ? "Pending..." : "Withdraw"}
         </button>
       </div>}
     </div>

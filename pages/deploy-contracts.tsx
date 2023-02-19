@@ -213,10 +213,10 @@ const Deploy: NextPage = () => {
     }
   }, [revPathAddress, setValue])
 
-  // if (typeof window !== "undefined") window.meta = () => {
-  //   setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
-  //   setRevPathAddress("0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
-  // }
+  if (typeof window !== "undefined") window.meta = () => {
+    setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+    setRevPathAddress("0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
+  }
 
   return (
     <>
@@ -239,13 +239,13 @@ const Deploy: NextPage = () => {
             <div className="flex flex-col">
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Project Name</p>
-                <input className="border border-black text-black h-8" {...register("collectionName", {required: "Name your collection"} )} />
+                <input className="border border-black text-black h-8 px-4" {...register("collectionName", {required: "Name your collection"} )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="collectionName" /></p>
               </div>
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Symbol</p>
-                <input className="border border-black text-black h-8" {...register("symbol", {required: "Give your collection a symbol"} )} />
+                <input className="border border-black text-black h-8 px-4" {...register("symbol", {required: "Give your collection a symbol"} )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="symbol" /></p>
               </div>
 
@@ -258,15 +258,15 @@ const Deploy: NextPage = () => {
               <MediaUpload nftImage={nftImage} setNftImage={setNftImage} audioFile={audioFile} setAudioFile={setAudioFile} />
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-8">
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="flex justify-between font-header">Reveel payout address {revPathAddress && <a rel='noreferrer' target='_blank' className="flex gap-2" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${collectionName}`}>
                   View in Reveel
 
                   <img style={{ width: '16px', height: '16px' }} src="/images/external-link.png" alt="external" />
                 </a>}</p>
+                {<input placeholder="0x000" disabled className="border border-black text-black h-8 px-4" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />}
                 {isConnected && <Form revPathName={getValues("collectionName")} setRevPathAddress={setRevPathAddress} revPathAddress={revPathAddress} />}
-                {<input placeholder="0x000" disabled className="border border-black text-black h-8" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />}
                 {<p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="revPathAddress" /></p>}
               </div>
 
@@ -285,7 +285,7 @@ const Deploy: NextPage = () => {
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Minting Price</p>
-                <input disabled className="border border-black text-black h-8" defaultValue={"0.005"} {...register("tokenPrice" )} />
+                <input disabled className="border border-black text-black h-8 px-4" defaultValue={"0.005"} {...register("tokenPrice" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="tokenPrice" /></p>
               </div>
 
@@ -294,7 +294,7 @@ const Deploy: NextPage = () => {
                   <p className="font-header">Purchase Count (Optional)</p>
                   <InfoField isHovering={isHovering2} setIsHovering={setIsHovering2} xDirection={'right'} yDirection={'bottom'} infoText={"Enter the number of NFTs each user can mint at one time.."} />
                 </div>
-                <input disabled className="border border-black text-black h-8" defaultValue={"10"} {...register("maxTokenPurchase")} />
+                <input disabled className="border border-black text-black h-8 px-4" defaultValue={"10"} {...register("maxTokenPurchase")} />
               </div>
 
               <div className="w-[500px] flex flex-col gap-3">
@@ -302,19 +302,19 @@ const Deploy: NextPage = () => {
                   <p className="font-header">Edition Size</p>
                   <InfoField isHovering={isHovering1} setIsHovering={setIsHovering1} xDirection={'right'} yDirection={'bottom'} infoText={"Number of NFTs available in the collection."} />
                 </div>
-                <input disabled className="border border-black text-black h-8" defaultValue="Open Edition" {...register("editionSize")} />
+                <input disabled className="border border-black text-black h-8 px-4" defaultValue="Open Edition" {...register("editionSize")} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="editionSize" /></p>
               </div>
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Sale Start Date</p>
-                <input className="border border-black text-black h-8" defaultValue={"2/27"} disabled {...register("saleStartDate" )} />
+                <input className="border border-black text-black h-8 px-4" defaultValue={"2/27"} disabled {...register("saleStartDate" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleStartDate" /></p>
               </div>
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Sale End Date</p>
-                <input className="border border-black text-black h-8" defaultValue={"3/13"} disabled {...register("saleEndDate" )} />
+                <input className="border border-black text-black h-8 px-4" defaultValue={"3/13"} disabled {...register("saleEndDate" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleEndDate" /></p>
               </div>    
             </div>
