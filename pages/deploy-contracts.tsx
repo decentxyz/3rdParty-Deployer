@@ -144,7 +144,7 @@ const Deploy: NextPage = () => {
             getValues("symbol"), // symbol
             false, // hasAdjustableCap
             false, // isSoulbound
-            0, // maxTokens
+            ethers.constants.MaxUint256.sub(ethers.BigNumber.from(1)), // maxTokens
             ethers.utils.parseEther("0.005"), // tokenPrice
             10, // maxTokensPurchase
             null, //presaleMerkleRoot
