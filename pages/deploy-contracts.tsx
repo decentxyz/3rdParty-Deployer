@@ -75,7 +75,7 @@ const Deploy: NextPage = () => {
   });
   const { register, getValues, handleSubmit, clearErrors, reset, setValue, formState: { errors, isValid }, watch } = methods;
 
-  const [collectionName] = watch(['collectionName'])
+  const [_collectionName, _symbol] = watch(['collectionName', 'symbol'])
 
   const onSubmit = handleSubmit(data => console.log(data));
 
@@ -201,8 +201,8 @@ const Deploy: NextPage = () => {
           <h1>Thank you for submitting your project to the Reveel Creator Grant</h1>
         </div>
         <div className="flex flex-col gap-2 my-8">
-          <a href={`https://hq.decent.xyz/admin/${chain?.id}/Editions/${link}`}>View your NFT Project on Decent</a>
-          <a href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${collectionName}`}>View your Revenue Path on Reveel</a>
+          <a className="rounded-md bg-white text-black px-4" href={`https://hq.decent.xyz/admin/${chain?.id}/Editions/${link}`}>View your NFT Project on Decent</a>
+          <a className="rounded-md bg-white text-black px-4" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${_collectionName}`}>View your Revenue Path on Reveel</a>
         </div>
         <div className="mt-22">
           Your submission will go live for minting on February 27th with all the other submissions. You will be notified by email as the voting page goes live.
@@ -249,11 +249,22 @@ const Deploy: NextPage = () => {
               </div>
 
               <MediaUpload nftImage={nftImage} setNftImage={setNftImage} audioFile={audioFile} setAudioFile={setAudioFile} />
+
+              <div className="flex justify-center my-20">
+                <div className="flex flex-col max-w-[300px] gap-2 p-6 border border-white rounded-md">
+                  {nftImage && <img src={nftImage.preview} className="rounded-md" />}
+                  <p className="text-white font-semibold text-2xl mt-4">{_collectionName}</p>
+                  <div className="flex justify-between">
+                    <p className="text-white font-semibold text-base">{_symbol}</p>
+                    <p className="text-white font-semibold text-base">Price: 0.005 ETH</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-col gap-8">
               <div className="w-[500px] flex flex-col gap-3">
-                <p className="flex justify-between font-header">Reveel payout address {revPathAddress && <a rel='noreferrer' target='_blank' className="flex gap-2" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${collectionName}`}>
+                <p className="flex justify-between font-header">Reveel payout address {revPathAddress && <a rel='noreferrer' target='_blank' className="flex gap-2" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${_collectionName}`}>
                   View in Reveel
 
                   <img style={{ width: '16px', height: '16px' }} src="/images/external-link.png" alt="external" />
@@ -267,7 +278,7 @@ const Deploy: NextPage = () => {
               <div className="w-[500px] flex flex-col gap-3">
                 <div className="pb-2 flex gap-1">
                   <p>Creator Royalty (Optional)</p>
-                  <InfoField isHovering={isHovering3} setIsHovering={setIsHovering3} xDirection={'left'} yDirection={'bottom'} infoText={"Please enter a percentage that you would like to receive from the value of every sale.  We use EIP 2981."} />
+                  <InfoField isHovering={isHovering3} setIsHovering={setIsHovering3} xDirection={'left'} yDirection={'bottom'} infoText={"Please enter a percentage that you would like to receive from the value of every sale.  We use EIP 2981 (NFT Royalty Standard)."} />
                 </div>
                 <div className="flex items-center text-black relative">
                   <input

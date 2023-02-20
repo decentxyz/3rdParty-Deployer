@@ -206,7 +206,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
           {update?.updateRevenueTiers.isLoading ? "pending..." : "Update Revenue Path"}
         </button>}
       </div>
-      {data && <div className='flex gap-4 w-2/3 mt-4 items-center justify-start text-white'>
+      {false && data && <div className='flex gap-4 w-2/3 mt-4 items-center justify-start text-white'>
         <div>
           <p className="font-medium">Balance</p>
           <p className="font-header">{data?.withdrawable + data?.pendingDistribution} ETH</p>
