@@ -116,7 +116,7 @@ const Deploy: NextPage = () => {
           token: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || ''
         });
 
-        const promise = () => new Promise((resolve) => {
+        const promise = (fileo: any) => new Promise((resolve) => {
           const fr = new FileReader()
 
           fr.onload = async function () {
@@ -127,17 +127,18 @@ const Deploy: NextPage = () => {
             resolve(ipfsImg)
           }
 
-          fr.readAsArrayBuffer((audioFile.preview !== '/images/icon.png' ? audioFile.raw : nftImage.raw ) as any)
+          fr.readAsArrayBuffer(fileo as any)
         })
 
-        const ipfsImg = await promise()
+        const ipfsImg = await promise(nftImage.raw)
+        const ipfsAudio = await promise(audioFile.raw)
 
         // create metadata
         const metadata = {
           description: getValues("description"),
           image: `ipfs://${ipfsImg}?`,
           name: getValues("collectionName"),
-          animation_url: `ipfs://${ipfsImg}?`
+          animation_url: `ipfs://${ipfsAudio || ipfsImg}?`
         }
 
         // build metadata json file
