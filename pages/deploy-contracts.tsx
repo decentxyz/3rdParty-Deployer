@@ -138,28 +138,6 @@ const Deploy: NextPage = () => {
         try {
           // if (!ethers.utils.isAddress(revPathAddress)) return
 
-          console.log("METAMETA:::", sdk,
-          getValues("collectionName"), // name
-          getValues("symbol"), // symbol
-          false, // hasAdjustableCap
-          false, // isSoulbound
-          0, // maxTokens
-          ethers.utils.parseEther("0.005"), // tokenPrice
-          10, // maxTokensPurchase
-          null, //presaleMerkleRoot
-          0, // presaleStart
-          0, // presaleEnd
-          Math.floor((new Date(2023, 1, 27)).getTime() / 1000), // saleStart
-          Math.floor((new Date(2023, 2, 13)).getTime() / 1000), // saleEnd = 1 year
-          getValues("royalty") * 100, // royaltyBPS
-          getValues("revPathAddress"), // payoutAddress (if not owner)
-          `ipfs://${ipfs}?`, // contractURI
-          `ipfs://${ipfs}?`, // metadataURI
-          null, // metadataRendererInit
-          null, // tokenGateConfig
-          (pending: any) => { console.log("Pending nonce: ", pending.nonce) },
-          (receipt: any) => { console.log("Receipt block: ", receipt.blockNumber) },)
-
           nft = await edition.deploy(
             sdk,
             getValues("collectionName"), // name

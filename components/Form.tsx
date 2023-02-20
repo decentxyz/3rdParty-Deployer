@@ -35,7 +35,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
     revPathAddress
   })
     
-  const { mutate, data: tx, isFetched: createRevPathIsFetched } = useCreateRevenuePath()
+  const { mutate, data: tx, isFetched: createRevPathIsFetched, error } = useCreateRevenuePath()
   const { data } = useBalances(revPathAddress)
   const { data: tiers, isFetched: tiersFetched } = useRevenuePathTiers(revPathAddress, { enabled: !!revPathAddress })
   const update = useUpdateRevenuePath(revPathAddress)
@@ -68,6 +68,10 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
       })
     }
   }, [tx, setRevPathAddress])
+
+  useEffect(() => {
+    if (error) setTimeout(() => setIsCreating(false), 100)
+  }, [error])
 
   useEffect(() => {
     if (createRevPathIsFetched) setIsCreating(false)
