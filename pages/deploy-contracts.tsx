@@ -249,8 +249,11 @@ const Deploy: NextPage = () => {
           <a target='_blank' rel='noreferrer' className="rounded-md bg-white text-black px-4" href={`https://hq.decent.xyz/admin/${chain?.id}/Editions/${link}`}>View your NFT Project on Decent</a>
           <a target='_blank' rel='noreferrer' className="rounded-md bg-white text-black px-4" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${_collectionName}`}>View your Revenue Path on Reveel</a>
         </div>
-        <div className="mt-22">
-          Your submission will go live for minting on February 27th with all the other submissions. You will be notified by email as the voting page goes live.
+        <div className="mt-22 mb-22">
+          Your submission will go live for minting on March 6th with all the other submissions. You will be notified by email as the voting page goes live.
+        </div>
+        <div>
+          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="bg-[#1d9bf0] py-2 px-3 rounded-full" data-size="large" data-text="I just submitted my NFT to the @r3vl_xyz Creator Grant competition! 🚀 All creators can participate for a chance to win up to $5000 USDC in Grant money 👀 " data-url="https://grant.r3vl.xyz/" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
         </div>
       </div>
     </div>
