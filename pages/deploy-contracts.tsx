@@ -227,8 +227,8 @@ const Deploy: NextPage = () => {
           <h1>Thank you for submitting your project to the Reveel Creator Grant</h1>
         </div>
         <div className="flex flex-col gap-2 my-8">
-          <a className="rounded-md bg-white text-black px-4" href={`https://hq.decent.xyz/admin/${chain?.id}/Editions/${link}`}>View your NFT Project on Decent</a>
-          <a className="rounded-md bg-white text-black px-4" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${_collectionName}`}>View your Revenue Path on Reveel</a>
+          <a target='_blank' rel='noreferrer' className="rounded-md bg-white text-black px-4" href={`https://hq.decent.xyz/admin/${chain?.id}/Editions/${link}`}>View your NFT Project on Decent</a>
+          <a target='_blank' rel='noreferrer' className="rounded-md bg-white text-black px-4" href={`https://app-v2-r3vl.vercel.app/revenue-paths-v2/${revPathAddress}--${_collectionName}`}>View your Revenue Path on Reveel</a>
         </div>
         <div className="mt-22">
           Your submission will go live for minting on February 27th with all the other submissions. You will be notified by email as the voting page goes live.
