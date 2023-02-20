@@ -131,14 +131,14 @@ const Deploy: NextPage = () => {
         })
 
         const ipfsImg = await promise(nftImage.raw)
-        const ipfsAudio = await promise(audioFile.raw)
+        const ipfsAudio = (audioFile as any)?.raw?.size && (audioFile as any)?.raw?.size > 0 ? await promise(audioFile.raw) : ipfsImg
 
         // create metadata
         const metadata = {
           description: getValues("description"),
           image: `ipfs://${ipfsImg}?`,
           name: getValues("collectionName"),
-          animation_url: `ipfs://${ipfsAudio || ipfsImg}?`
+          animation_url: `ipfs://${ipfsAudio}?`
         }
 
         // build metadata json file
