@@ -14,6 +14,7 @@ import { NFTStorage, Blob } from 'nft.storage';
 import { useRouter } from "next/router";
 import Form from "../components/Form";
 import Modal from 'react-modal'
+import Script from "next/script";
 
 const schema = yup.object().shape({
   collectionName: yup.string()
@@ -240,7 +241,9 @@ const Deploy: NextPage = () => {
   } , [setValue, setRevPathAddress])
 
   if (showLink) {
-    return <div className="flex flex-col gap-8 items-center justify-center background min-h-screen text-white py-12 px-16">
+    return <>
+    <Script src="https://platform.twitter.com/widgets.js" />
+    <div className="flex flex-col gap-8 items-center justify-center background min-h-screen text-white py-12 px-16">
       <div className="flex flex-col items-center justify-center gap-4">
         <div className="flex flex-col items-center justify-between gap-8 max-w-[900px]">
           <h1>Thank you for submitting your project to the Reveel Creator Grant</h1>
@@ -253,10 +256,11 @@ const Deploy: NextPage = () => {
           Your submission will go live for minting on March 6th with all the other submissions. You will be notified by email as the voting page goes live.
         </div>
         <div>
-          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="bg-[#1d9bf0] py-2 px-3 rounded-full" data-size="large" data-text="I just submitted my NFT to the @r3vl_xyz Creator Grant competition! 🚀 All creators can participate for a chance to win up to $5000 USDC in Grant money 👀 " data-url="https://grant.r3vl.xyz/" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
+          <a target='_blank' rel='noreferrer' href="https://twitter.com/share?ref_src=twsrc%5Etfw" className="twitter-share-button" data-size="large" data-text="I just submitted my NFT to the @r3vl_xyz Creator Grant competition! 🚀 All creators can participate for a chance to win up to $5000 USDC in Grant money 👀 " data-url="https://grant.r3vl.xyz/" data-show-count="false">Tweet</a>
         </div>
       </div>
     </div>
+    </>
   }
 
   return (
