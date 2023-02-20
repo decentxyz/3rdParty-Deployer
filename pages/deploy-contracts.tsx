@@ -77,7 +77,7 @@ const Deploy: NextPage = () => {
 
   const [_collectionName, _symbol] = watch(['collectionName', 'symbol'])
 
-  const onSubmit = handleSubmit(data => console.log(data));
+  const onSubmit = handleSubmit(data => console.log("FORM_DATA:::", data));
 
   const [nftImage, setNftImage] = useState({ preview: '/images/icon.png', raw: { type: "" } });
   const [audioFile, setAudioFile] = useState({ preview: '/images/icon.png', raw: { type: "" } });
@@ -97,7 +97,7 @@ const Deploy: NextPage = () => {
   }
 
   const success = (nft: any) => {
-    console.log("NFT RESULT:::", nft)
+    console.log("NFT_RESULT:::", nft)
     setShowLink(true);
     setLink(nft.address);
   }
@@ -136,7 +136,30 @@ const Deploy: NextPage = () => {
         let nft;
 
         try {
-          // if (!ethers.utils.isAddress(revPathAddress)) return
+          console.log(
+            "PAYLOAD:::", 
+            sdk,
+            getValues("collectionName"), // name
+            getValues("symbol"), // symbol
+            false, // hasAdjustableCap
+            false, // isSoulbound
+            ethers.constants.MaxUint256.sub(ethers.BigNumber.from(1)), // maxTokens
+            ethers.utils.parseEther("0.005"), // tokenPrice
+            10, // maxTokensPurchase
+            null, //presaleMerkleRoot
+            0, // presaleStart
+            0, // presaleEnd
+            Math.floor((new Date(2023, 1, 27)).getTime() / 1000), // saleStart
+            Math.floor((new Date(2023, 2, 13)).getTime() / 1000), // saleEnd = 1 year
+            getValues("royalty") * 100, // royaltyBPS
+            getValues("revPathAddress"), // payoutAddress (if not owner)
+            `ipfs://${ipfs}?`, // contractURI
+            `ipfs://${ipfs}?`, // metadataURI
+            null, // metadataRendererInit
+            null, // tokenGateConfig
+            (pending: any) => { console.log("Pending nonce: ", pending.nonce) },
+            (receipt: any) => { console.log("Receipt block: ", receipt.blockNumber) },
+        )
 
           nft = await edition.deploy(
             sdk,
@@ -160,7 +183,7 @@ const Deploy: NextPage = () => {
             null, // tokenGateConfig
             (pending: any) => { console.log("Pending nonce: ", pending.nonce) },
             (receipt: any) => { console.log("Receipt block: ", receipt.blockNumber) },
-          );
+          )
         } catch (error) {
           console.error(error);
 
