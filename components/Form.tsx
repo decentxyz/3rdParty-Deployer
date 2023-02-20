@@ -56,8 +56,8 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   }, [tiers, tiersFetched, setCollabs, address])
 
   useEffect(() => {
-    if (tx) {
-      setIsCreating(true);
+    if ((tx as any)?.wait) {
+      setTimeout(() => setIsCreating(true), 200);
 
       (tx as any).wait().then((r: any) => {
         console.log(r.logs[0].address)
