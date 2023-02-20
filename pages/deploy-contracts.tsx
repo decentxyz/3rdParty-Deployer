@@ -189,10 +189,13 @@ const Deploy: NextPage = () => {
     }
   }, [revPathAddress, setValue])
 
-  // if (typeof window !== "undefined") window.meta = () => {
-  //   setValue("revPathAddress", "0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
-  //   setRevPathAddress("0x9Af1EDbc49Ed89d3f79025Dc700F28004DEDF302")
-  // }
+  useEffect(() => {
+    if (typeof window !== "undefined") (window as any).meta = (address: string) => {
+      setValue("revPathAddress", address)
+
+      setRevPathAddress(address)
+    }
+  } , [setValue, setRevPathAddress])
 
   if (showLink) {
     return <div className="flex flex-col gap-8 items-center justify-center background min-h-screen text-white py-12 px-16">
