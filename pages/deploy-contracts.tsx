@@ -149,7 +149,7 @@ const Deploy: NextPage = () => {
             null, //presaleMerkleRoot
             0, // presaleStart
             0, // presaleEnd
-            Math.floor((new Date(2023, 1, 27)).getTime() / 1000), // saleStart
+            Math.floor((new Date(2023, 2, 6)).getTime() / 1000), // saleStart
             Math.floor((new Date(2023, 2, 13)).getTime() / 1000), // saleEnd = 1 year
             getValues("royalty") * 100, // royaltyBPS
             getValues("revPathAddress"), // payoutAddress (if not owner)
@@ -173,7 +173,7 @@ const Deploy: NextPage = () => {
             null, //presaleMerkleRoot
             0, // presaleStart
             0, // presaleEnd
-            Math.floor((new Date(2023, 1, 27)).getTime() / 1000), // saleStart
+            Math.floor((new Date(2023, 2, 6)).getTime() / 1000), // saleStart
             Math.floor((new Date(2023, 2, 13)).getTime() / 1000), // saleEnd = 1 year
             getValues("royalty") * 100, // royaltyBPS
             getValues("revPathAddress"), // payoutAddress (if not owner)
@@ -276,7 +276,7 @@ const Deploy: NextPage = () => {
 
               <MediaUpload nftImage={nftImage} setNftImage={setNftImage} audioFile={audioFile} setAudioFile={setAudioFile} />
 
-              <div className="flex justify-center my-20">
+              {/* <div className="flex justify-center my-20">
                 <div className="flex flex-col max-w-[300px] gap-2 p-6 border border-white rounded-md">
                   {nftImage && <img src={nftImage.preview} className="rounded-md" />}
                   <p className="text-white font-semibold text-2xl mt-4">{_collectionName}</p>
@@ -285,7 +285,7 @@ const Deploy: NextPage = () => {
                     <p className="text-white font-semibold text-base">Price: 0.005 ETH</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col gap-8">
@@ -338,7 +338,7 @@ const Deploy: NextPage = () => {
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Sale Start Date</p>
-                <input className="border border-black text-black h-8 px-4" defaultValue={"2/27"} disabled {...register("saleStartDate" )} />
+                <input className="border border-black text-black h-8 px-4" defaultValue={"3/06"} disabled {...register("saleStartDate" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleStartDate" /></p>
               </div>
 
