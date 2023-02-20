@@ -207,8 +207,9 @@ const Deploy: NextPage = () => {
           setIsDeploying(false)
         } finally {
           if (nft?.address) {
-            success(nft);
-            reset();
+            success(nft)
+
+            // reset()
           }
 
           setIsDeploying(false)
