@@ -111,12 +111,33 @@ const Deploy: NextPage = () => {
 
         setIsDeploying(false)
       } else if (chain) {
+        // send metadata file to ipfs
+        const client = new NFTStorage({
+          token: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || ''
+        });
+
+        const promise = () => new Promise((resolve) => {
+          const fr = new FileReader()
+
+          fr.onload = async function () {
+            const b = new Blob([fr.result as ArrayBuffer])
+
+            const ipfsImg = await client.storeBlob(b)
+
+            resolve(ipfsImg)
+          }
+
+          fr.readAsArrayBuffer(nftImage.raw as any)
+        })
+
+        const ipfsImg = await promise()
+
         // create metadata
         const metadata = {
           description: getValues("description"),
-          image: nftImage,
+          image: `ipfs://${ipfsImg}?`,
           name: getValues("collectionName"),
-          animation_url: nftImage
+          animation_url: `ipfs://${ipfsImg}?`
         }
 
         // build metadata json file
@@ -126,10 +147,6 @@ const Deploy: NextPage = () => {
           type: "application/json;charset=utf-8",
         });
 
-        // send metadata file to ipfs
-        const client = new NFTStorage({
-          token: process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || ''
-        });
         const ipfs = await client.storeBlob(blob);
 
         const sdk = new DecentSDK(chain.id, signer);
