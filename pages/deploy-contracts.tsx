@@ -127,7 +127,7 @@ const Deploy: NextPage = () => {
             resolve(ipfsImg)
           }
 
-          fr.readAsArrayBuffer(nftImage.raw as any)
+          fr.readAsArrayBuffer((audioFile.preview !== '/images/icon.png' ? audioFile.raw : nftImage.raw ) as any)
         })
 
         const ipfsImg = await promise()
