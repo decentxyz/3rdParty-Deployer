@@ -271,7 +271,7 @@ const Deploy: NextPage = () => {
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Symbol</p>
-                <input className="border border-black text-black h-8 px-4" defaultValue={'RCGS1'} {...register("symbol" )} />
+                <input disabled className="border border-black text-black h-8 px-4" defaultValue={'RCGS1'} {...register("symbol" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="symbol" /></p>
               </div>
 
