@@ -20,7 +20,7 @@ const schema = yup.object().shape({
   collectionName: yup.string()
     .required('Name your collection.'),
   symbol: yup.string()
-    .required('Give your collection a symbol.'),
+    .typeError('Give your collection a symbol.'),
   tokenPrice: yup.number()
     .typeError('Must set price for token. Please set to 0 if you wish for your NFTs to be free.'),
   saleStartDate: yup.number()
@@ -271,7 +271,7 @@ const Deploy: NextPage = () => {
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Symbol</p>
-                <input disabled className="border border-black text-black h-8 px-4" defaultValue={'RCGS1'} {...register("symbol" )} />
+                <input disabled className="border border-black text-black h-8 px-4" defaultValue={'RCGS1'} {...register("symbol")} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="symbol" /></p>
               </div>
 
