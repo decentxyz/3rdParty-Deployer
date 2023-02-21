@@ -183,7 +183,7 @@ const Deploy: NextPage = () => {
           nft = await edition.deploy(
             sdk,
             getValues("collectionName"), // name
-            getValues("symbol"), // symbol
+            "RCGS1", // symbol
             false, // hasAdjustableCap
             false, // isSoulbound
             ethers.constants.MaxUint256.sub(ethers.BigNumber.from(1)), // maxTokens
