@@ -159,7 +159,7 @@ const Deploy: NextPage = () => {
             "PAYLOAD:::", 
             sdk,
             getValues("collectionName"), // name
-            getValues("symbol"), // symbol
+            "RCGS1", // symbol
             false, // hasAdjustableCap
             false, // isSoulbound
             ethers.constants.MaxUint256.sub(ethers.BigNumber.from(1)), // maxTokens
@@ -271,7 +271,7 @@ const Deploy: NextPage = () => {
 
               <div className="w-[500px] flex flex-col gap-3">
                 <p className="font-header">Symbol</p>
-                <input className="border border-black text-black h-8 px-4" {...register("symbol", {required: "Give your collection a symbol"} )} />
+                <input className="border border-black text-black h-8 px-4" defaultValue={'RCGS1'} {...register("symbol" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="symbol" /></p>
               </div>
 
