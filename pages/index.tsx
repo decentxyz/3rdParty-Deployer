@@ -1,14 +1,11 @@
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { R3vlProvider, createClient } from '@r3vl/sdk';
 import Deploy from './deploy-contracts';
 import Navbar from '../components/Navbar/Navbar';
 import Head from 'next/head';
 
 const Home: NextPage = () => {
-  const r3vlClient = createClient()
-
   return <div className='bg-black'>
     <Head>
       <title>Decent</title>
@@ -19,9 +16,7 @@ const Home: NextPage = () => {
       <link rel="icon" href="/images/favi.png" />
     </Head>
     <Navbar />
-    <R3vlProvider client={r3vlClient}>
-      <Deploy />
-    </R3vlProvider>
+    <Deploy />
     <footer className='py-8 border-t border-white text-white justify-center flex items-center bg-black'>
       <p className='pr-2 tracking-widest text-sm font-[400]'>Powered by </p>
       <Link href="http://decent.xyz/" className='pt-1'>

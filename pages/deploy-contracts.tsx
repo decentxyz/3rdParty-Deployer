@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useForm, FormProvider } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
-import { DecentSDK, edition, ipfs } from '@decent.xyz/sdk'; //Note: not using ipfs in demo
-import { useSigner, useNetwork, useAccount } from 'wagmi';
+import { DecentSDK, edition } from '@decent.xyz/sdk';
+import { useSigner, useNetwork } from 'wagmi';
 import { ethers } from "ethers";
 import InfoField from "../components/InfoField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import MediaUpload from "../components/MediaUpload/MediaUpload";
 import { NFTStorage, Blob } from 'nft.storage';
-import { useRouter } from "next/router";
 import ReveelForm from "../components/ReveelForm";
-import Script from "next/script";
+import { R3vlProvider, createClient } from '@r3vl/sdk';
 
 const schema = yup.object().shape({
   collectionName: yup.string()
@@ -66,6 +65,7 @@ type FormData = {
 const Deploy: NextPage = () => {
   const { data: signer } = useSigner();
   const { chain } = useNetwork();
+  const r3vlClient = createClient();
 
   const methods = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -216,7 +216,9 @@ const Deploy: NextPage = () => {
                 <p className="text-lg font-medium">1. Add split recipients for this project & deploy your revenue path.</p>
                 <p className="flex justify-between font-header">Reveel payout address</p>
                 <input placeholder="0x000" disabled className="border border-black text-black h-8 px-4" defaultValue={revPathAddress} {...register("revPathAddress", {required: "Must set."} )} />
-                <ReveelForm revPathName={getValues("collectionName")} setRevPathAddress={setRevPathAddress} revPathAddress={revPathAddress} />
+                <R3vlProvider client={r3vlClient}>
+                  <ReveelForm revPathName={getValues("collectionName")} setRevPathAddress={setRevPathAddress} revPathAddress={revPathAddress} />
+                </R3vlProvider>
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="revPathAddress" /></p>
               </div>
 
