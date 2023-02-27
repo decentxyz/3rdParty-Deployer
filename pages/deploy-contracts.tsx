@@ -134,7 +134,6 @@ const Deploy: NextPage = () => {
         const ipfsImg = await promise(nftImage.raw)
         const ipfsAudio = (audioFile as any)?.raw?.size && (audioFile as any)?.raw?.size > 0 ? await promise(audioFile.raw) : ipfsImg
 
-        // create metadata
         const metadata = {
           description: getValues("description"),
           image: `ipfs://${ipfsImg}?`,
