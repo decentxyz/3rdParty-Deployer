@@ -158,8 +158,8 @@ const Deploy: NextPage = () => {
             null, //presaleMerkleRoot
             0, // presaleStart
             0, // presaleEnd
-            Math.floor((new Date(2023, 2, 2)).getTime() / 1000), // saleStart
-            Math.floor((new Date(2023, 2, 5)).getTime() / 1000), // saleEnd = 1 year
+            Math.floor((new Date(2023, 2, 1)).getTime() / 1000), // saleStart
+            Math.floor((new Date(2023, 2, 8)).getTime() / 1000), // saleEnd = 1 year
             getValues("royalty") * 100, // royaltyBPS
             getValues("revPathAddress"), // payoutAddress (if not owner)
             `ipfs://${ipfs}?`, // contractURI
@@ -209,7 +209,6 @@ const Deploy: NextPage = () => {
       <h1 className='text-white border-b border-white w-full py-2 mb-8'>UVR Artist Submission</h1>
       <FormProvider {...methods}>
         <div className='gap-4 lg:mx-24 sm:mx-16'>
-
           <div className="flex gap-20">
             <div className="space-y-8  w-[500px]">
               <div className="flex flex-col gap-3 border border-white rounded-md p-4">
