@@ -24,8 +24,8 @@ const AudioUpload = ({ audioFile, setAudioFile, formRegisterName }: any) => {
         <p style={{ left:17, top:9 }}>
           <Image
             title=""
-            width={68}
-            height={59.23}
+            width={20}
+            height={20}
             src={audioFile.preview}
             alt="nft image"
           />

@@ -1,23 +1,34 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { R3vlProvider, createClient } from '@r3vl/sdk';
-import Form from '../components/Form';
-import { useRouter } from 'next/router';
-import { useAccount } from 'wagmi';
 import Deploy from './deploy-contracts';
+import Navbar from '../components/Navbar/Navbar';
+import Head from 'next/head';
 
 const Home: NextPage = () => {
   const r3vlClient = createClient()
 
-  return (
+  return <div className='bg-black'>
+    <Head>
+      <title>Decent</title>
+      <meta
+        name="description"
+        content='A deployment page for launching Decent NFT contracts with Reveel revenue paths.'
+      />
+      <link rel="icon" href="/images/favi.png" />
+    </Head>
+    <Navbar />
     <R3vlProvider client={r3vlClient}>
       <Deploy />
     </R3vlProvider>
-  );
+    <footer className='py-8 border-t border-white text-white justify-center flex items-center bg-black'>
+      <p className='pr-2 tracking-widest text-sm font-[400]'>Powered by </p>
+      <Link href="http://decent.xyz/" className='pt-1'>
+        <Image src='/images/decent.png' height={12} width={85} alt='Decent 💪' />
+    </Link>
+    </footer>
+  </div>;
 };
 
 export default Home;
