@@ -183,7 +183,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
 
       <div className='flex gap-4 w-2/3 mt-4'>
         <button
-          className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
+          className='cursor-pointer bg-white hover:opacity-80 text-black px-4 py-1 rounded-full'
           onClick={() => setCollabs([ ...collabs, { address: '', share: 0 } ])}
         >
           Add
@@ -192,7 +192,7 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
         {!revPathAddress && <button
           type="button"
           disabled={isCreating}
-          className='cursor-pointer bg-white text-black px-4 py-1 rounded-full'
+          className='cursor-pointer bg-white text-violet-500 hover:opacity-80 px-4 py-1 rounded-full'
           onClick={submitPath}
         >
           {isCreating ? "Pending..." : "Deploy Revenue Path"}
@@ -229,4 +229,4 @@ const Form = ({ revPathName, revPathAddress, setRevPathAddress }: any) => {
   </>
 }
 
-export default Form
+export default Form;

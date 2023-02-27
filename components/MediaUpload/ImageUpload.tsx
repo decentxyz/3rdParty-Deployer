@@ -31,8 +31,8 @@ const ImageUpload = ({ nftImage, setNftImage, formRegisterName, label }: any) =>
         <p style={{ left:17, top:9 }}>
           <Image
             title=""
-            width={68}
-            height={59.23}
+            width={20}
+            height={20}
             src={nftImage.preview}
             alt="nft image"
           />
