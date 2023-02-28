@@ -269,13 +269,13 @@ const Deploy: NextPage = () => {
 
               <div className="flex flex-col gap-3">
                 <p>Sale Start Date</p>
-                <input className="border border-black text-black h-8 px-4" defaultValue={"3/2/23"} disabled {...register("saleStartDate" )} />
+                <input className="border border-black text-black h-8 px-4" defaultValue={"3/1/23"} disabled {...register("saleStartDate" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleStartDate" /></p>
               </div>
 
               <div className="flex flex-col gap-3">
                 <p>Sale End Date</p>
-                <input className="border border-black text-black h-8 px-4" defaultValue={"3/5/23"} disabled {...register("saleEndDate" )} />
+                <input className="border border-black text-black h-8 px-4" defaultValue={"3/8/23"} disabled {...register("saleEndDate" )} />
                 <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleEndDate" /></p>
               </div>    
             </div>
