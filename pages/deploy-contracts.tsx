@@ -282,12 +282,7 @@ const Deploy: NextPage = () => {
                   <p className="text-sm absolute right-3">Editions</p>
                 </div>
               </div>
-
-              {/* <div className="flex flex-col gap-3">
-                <p>Sale Start Date (Optional)</p>
-                <input type="datetime-local" className="border border-black text-black h-8 px-4" defaultValue={'0'} {...register("saleStartDate" )} />
-                <p className="text-red-600 text-sm"><ErrorMessage errors={errors} name="saleStartDate" /></p>
-              </div> */}
+              
               <div className="py-3">
                 <div className="pb-2 flex items-center">
                   <label>Sale Start Date (Optional)</label>
